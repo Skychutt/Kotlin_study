@@ -1,0 +1,1090 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="从 Kotlin 全语法到 Jetpack Compose、架构、数据、测试与发布的完整 Android 独立开发教程。">
+  <title>Kotlin → Android 独立开发完整教程</title>
+  <style>
+    :root { --ink:#17201d; --muted:#62706a; --paper:#f6f3ea; --card:#fffdf7; --line:#d8d3c6; --brand:#5b3cc4; --brand2:#00a88f; --code:#171b24; --codeInk:#e8edf7; --shadow:0 18px 55px rgba(35,29,20,.10); --sidebar:300px; color-scheme:light; }
+    [data-theme="dark"] { --ink:#eff5f1; --muted:#abb8b1; --paper:#111715; --card:#17201d; --line:#33403a; --brand:#a991ff; --brand2:#54d8bf; --code:#090d0c; --codeInk:#e8f0ec; --shadow:0 18px 55px rgba(0,0,0,.32); color-scheme:dark; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; scroll-padding-top:24px; }
+    body { margin:0; color:var(--ink); background:var(--paper); font:16px/1.78 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif; }
+    button,input { font:inherit; }
+    a { color:var(--brand); }
+    .reading-bar { position:fixed; inset:0 auto auto 0; height:4px; width:0; background:linear-gradient(90deg,var(--brand),var(--brand2)); z-index:100; }
+    .mobile-head { display:none; }
+    .sidebar { position:fixed; inset:0 auto 0 0; width:var(--sidebar); padding:26px 20px; background:var(--card); border-right:1px solid var(--line); z-index:50; overflow:auto; }
+    .brand { display:flex; align-items:center; gap:11px; margin:4px 4px 18px; font-weight:900; letter-spacing:-.03em; }
+    .brand-mark { display:grid; place-items:center; width:38px; height:38px; color:white; border-radius:13px; background:linear-gradient(135deg,var(--brand),var(--brand2)); box-shadow:0 7px 20px color-mix(in srgb,var(--brand) 30%,transparent); }
+    .search { width:100%; padding:11px 13px; color:var(--ink); background:var(--paper); border:1px solid var(--line); border-radius:12px; outline:none; }
+    .search:focus { border-color:var(--brand); box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 16%,transparent); }
+    .progress-card { margin:14px 0; padding:13px; border:1px solid var(--line); border-radius:14px; background:var(--paper); }
+    .progress-meta { display:flex; justify-content:space-between; font-size:13px; color:var(--muted); }
+    .progress-track { height:7px; margin-top:8px; overflow:hidden; background:var(--line); border-radius:999px; }
+    .progress-fill { width:0; height:100%; background:linear-gradient(90deg,var(--brand),var(--brand2)); transition:width .25s; }
+    .toc-title { margin:18px 6px 8px; color:var(--muted); font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.12em; }
+    .toc { display:grid; gap:2px; }
+    .toc-link { padding:7px 10px; color:var(--muted); text-decoration:none; border-radius:9px; font-size:14px; line-height:1.35; }
+    .toc-link:hover,.toc-link.active { color:var(--brand); background:color-mix(in srgb,var(--brand) 11%,transparent); }
+    .side-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:16px; }
+    .icon-btn { padding:8px; color:var(--ink); background:transparent; border:1px solid var(--line); border-radius:10px; cursor:pointer; }
+    main { margin-left:var(--sidebar); }
+    .hero { min-height:560px; display:grid; align-items:center; padding:78px clamp(28px,7vw,110px); color:white; background:radial-gradient(circle at 85% 15%,rgba(255,255,255,.18),transparent 25%),linear-gradient(135deg,#4c2aad 0%,#6542c8 48%,#008f7b 130%); overflow:hidden; position:relative; }
+    .hero::after { content:"{ }"; position:absolute; right:5vw; bottom:-80px; color:rgba(255,255,255,.09); font:900 280px/1 ui-monospace,monospace; transform:rotate(-7deg); }
+    .hero-content { position:relative; z-index:1; max-width:880px; }
+    .eyebrow { display:inline-flex; padding:7px 12px; border:1px solid rgba(255,255,255,.35); border-radius:999px; background:rgba(255,255,255,.1); font-size:13px; font-weight:800; letter-spacing:.06em; }
+    h1 { max-width:820px; margin:22px 0 18px; font-size:clamp(40px,7vw,84px); line-height:1.02; letter-spacing:-.055em; }
+    .lead { max-width:700px; margin:0; color:rgba(255,255,255,.84); font-size:clamp(17px,2vw,22px); }
+    .stats { display:flex; flex-wrap:wrap; gap:12px; margin-top:34px; }
+    .stat { min-width:130px; padding:14px 17px; border:1px solid rgba(255,255,255,.25); border-radius:14px; background:rgba(255,255,255,.1); backdrop-filter:blur(8px); }
+    .stat strong { display:block; font-size:25px; }
+    .stat span { font-size:12px; color:rgba(255,255,255,.76); }
+    .course { width:min(960px,calc(100% - 48px)); margin:0 auto; padding:74px 0 120px; }
+    .lesson { margin:0 0 30px; padding:40px clamp(22px,5vw,58px); background:var(--card); border:1px solid var(--line); border-radius:24px; box-shadow:var(--shadow); }
+    .lesson:empty { display:none; }
+    .lesson.is-hidden { display:none; }
+    .lesson-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:18px; border-bottom:1px solid var(--line); margin-bottom:22px; }
+    h2 { margin:0 0 17px; font-size:clamp(25px,4vw,38px); line-height:1.2; letter-spacing:-.035em; }
+    h3 { margin:34px 0 10px; font-size:22px; line-height:1.3; }
+    h4 { margin:26px 0 8px; font-size:17px; }
+    p { margin:12px 0; }
+    strong { font-weight:800; }
+    p code,li code,td code { padding:.12em .38em; color:var(--brand); background:color-mix(in srgb,var(--brand) 10%,transparent); border:1px solid color-mix(in srgb,var(--brand) 18%,transparent); border-radius:5px; font: .9em ui-monospace,SFMono-Regular,Consolas,monospace; }
+    ul,ol { padding-left:1.45em; }
+    li { margin:6px 0; }
+    blockquote { margin:0 0 25px; padding:17px 20px; border-left:4px solid var(--brand2); border-radius:0 12px 12px 0; background:color-mix(in srgb,var(--brand2) 10%,transparent); font-size:17px; }
+    .chapter-rule { margin:35px 0; border:0; border-top:1px dashed var(--line); }
+    .code-wrap { margin:19px 0; overflow:hidden; border:1px solid #2c3341; border-radius:15px; background:var(--code); box-shadow:0 12px 28px rgba(0,0,0,.13); }
+    .code-head { display:flex; justify-content:space-between; align-items:center; padding:8px 12px; color:#9eabc2; background:#222936; font:12px ui-monospace,monospace; }
+    .copy-code { padding:4px 9px; color:#dbe4f5; border:1px solid #445068; border-radius:7px; background:transparent; cursor:pointer; }
+    pre { margin:0; padding:18px; overflow:auto; color:var(--codeInk); font:14px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace; tab-size:4; }
+    .table-scroll { overflow:auto; margin:18px 0; border:1px solid var(--line); border-radius:13px; }
+    table { width:100%; border-collapse:collapse; background:var(--card); }
+    th,td { padding:11px 13px; text-align:left; border-bottom:1px solid var(--line); white-space:nowrap; }
+    th { background:color-mix(in srgb,var(--brand) 8%,var(--card)); }
+    .done-toggle { display:flex; flex:none; align-items:center; gap:7px; padding-top:7px; color:var(--muted); font-size:13px; cursor:pointer; }
+    .done-toggle input { width:18px; height:18px; accent-color:var(--brand2); }
+    .quiz-panel { margin:0 0 30px; padding:40px clamp(22px,5vw,58px); border:1px solid var(--line); border-radius:24px; background:linear-gradient(135deg,color-mix(in srgb,var(--brand) 12%,var(--card)),var(--card)); box-shadow:var(--shadow); }
+    .quiz-card { margin:20px 0; padding:18px; border:1px solid var(--line); border-radius:14px; background:var(--card); }
+    .answers { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; }
+    .answer { padding:10px 12px; text-align:left; color:var(--ink); background:var(--paper); border:1px solid var(--line); border-radius:10px; cursor:pointer; }
+    .answer.correct { border-color:#1aa77b; background:rgba(26,167,123,.13); }
+    .answer.wrong { border-color:#da5a5a; background:rgba(218,90,90,.12); }
+    .explain { min-height:24px; margin:8px 2px 0; color:var(--muted); font-size:14px; }
+    .quiz-result { font-weight:800; color:var(--brand); }
+    .no-results { display:none; padding:60px 20px; text-align:center; color:var(--muted); }
+    .no-results.show { display:block; }
+    .back-top { position:fixed; right:22px; bottom:22px; width:45px; height:45px; color:white; border:0; border-radius:50%; background:var(--brand); box-shadow:var(--shadow); cursor:pointer; opacity:0; pointer-events:none; transition:.2s; }
+    .back-top.show { opacity:1; pointer-events:auto; }
+    @media (max-width:900px) {
+      .mobile-head { position:sticky; top:0; display:flex; align-items:center; justify-content:space-between; padding:12px 16px; background:color-mix(in srgb,var(--card) 90%,transparent); border-bottom:1px solid var(--line); backdrop-filter:blur(14px); z-index:45; }
+      .mobile-head button { color:var(--ink); background:transparent; border:1px solid var(--line); border-radius:9px; padding:6px 10px; }
+      .sidebar { transform:translateX(-105%); transition:transform .25s; box-shadow:var(--shadow); }
+      .sidebar.open { transform:translateX(0); }
+      main { margin-left:0; }
+      .hero { min-height:500px; padding:62px 24px; }
+      .course { width:min(100% - 24px,760px); padding-top:28px; }
+      .lesson,.quiz-panel { padding:27px 20px; border-radius:18px; }
+      .lesson-heading { display:block; }
+      .done-toggle { padding:0 0 14px; }
+    }
+    @media (max-width:560px) { .answers { grid-template-columns:1fr; } .hero::after { font-size:160px; } h1 { font-size:43px; } }
+    @media print { .sidebar,.mobile-head,.reading-bar,.back-top,.done-toggle,.copy-code,.quiz-panel { display:none!important; } main{margin:0}.hero{min-height:auto;padding:40px;color:#000;background:#fff}.lead{color:#333}.course{width:100%;padding:0}.lesson{box-shadow:none;border:0;break-inside:avoid;padding:25px 0} }
+  </style>
+</head>
+<body>
+  <div class="reading-bar" aria-hidden="true"></div>
+  <header class="mobile-head"><button id="menuButton" type="button" aria-label="打开目录">☰ 目录</button><strong>Kotlin → Android</strong><button id="mobileTheme" type="button" aria-label="切换主题">◐</button></header>
+  <aside class="sidebar" aria-label="课程目录">
+    <div class="brand"><span class="brand-mark">K</span><span>Kotlin → Android</span></div>
+    <input class="search" id="search" type="search" placeholder="搜索语法、Compose、Room…" aria-label="搜索课程">
+    <div class="progress-card"><div class="progress-meta"><span>课程进度</span><strong id="progressText">0 / 25</strong></div><div class="progress-track"><div class="progress-fill" id="progressFill"></div></div></div>
+    <div class="toc-title">25 章完整路径</div>
+    <nav class="toc"><a class="toc-link" href="#使用方法与学习路线" data-target="使用方法与学习路线">使用方法与学习路线</a>
+<a class="toc-link" href="#第-1-章-环境-程序结构与第一段-kotlin" data-target="第-1-章-环境-程序结构与第一段-kotlin">环境、程序结构与第一段 Kotlin</a>
+<a class="toc-link" href="#第-2-章-变量-常量-类型与运算符" data-target="第-2-章-变量-常量-类型与运算符">变量、常量、类型与运算符</a>
+<a class="toc-link" href="#第-3-章-空安全与类型转换" data-target="第-3-章-空安全与类型转换">空安全与类型转换</a>
+<a class="toc-link" href="#第-4-章-流程控制" data-target="第-4-章-流程控制">流程控制</a>
+<a class="toc-link" href="#第-5-章-函数" data-target="第-5-章-函数">函数</a>
+<a class="toc-link" href="#第-6-章-类-对象与构造" data-target="第-6-章-类-对象与构造">类、对象与构造</a>
+<a class="toc-link" href="#第-7-章-接口-数据类-枚举-密封类型与-object" data-target="第-7-章-接口-数据类-枚举-密封类型与-object">接口、数据类、枚举、密封类型与 object</a>
+<a class="toc-link" href="#第-8-章-数组-集合与序列" data-target="第-8-章-数组-集合与序列">数组、集合与序列</a>
+<a class="toc-link" href="#第-9-章-lambda-高阶函数与函数类型" data-target="第-9-章-lambda-高阶函数与函数类型">Lambda、高阶函数与函数类型</a>
+<a class="toc-link" href="#第-10-章-作用域函数与扩展" data-target="第-10-章-作用域函数与扩展">作用域函数与扩展</a>
+<a class="toc-link" href="#第-11-章-泛型-型变与类型系统进阶" data-target="第-11-章-泛型-型变与类型系统进阶">泛型、型变与类型系统进阶</a>
+<a class="toc-link" href="#第-12-章-委托-运算符-解构与-dsl" data-target="第-12-章-委托-运算符-解构与-dsl">委托、运算符、解构与 DSL</a>
+<a class="toc-link" href="#第-13-章-异常-result-与资源管理" data-target="第-13-章-异常-result-与资源管理">异常、Result 与资源管理</a>
+<a class="toc-link" href="#第-14-章-java-互操作-注解与反射" data-target="第-14-章-java-互操作-注解与反射">Java 互操作、注解与反射</a>
+<a class="toc-link" href="#第-15-章-协程与-flow" data-target="第-15-章-协程与-flow">协程与 Flow</a>
+<a class="toc-link" href="#第-16-章-android-项目与组件基础" data-target="第-16-章-android-项目与组件基础">Android 项目与组件基础</a>
+<a class="toc-link" href="#第-17-章-jetpack-compose-ui" data-target="第-17-章-jetpack-compose-ui">Jetpack Compose UI</a>
+<a class="toc-link" href="#第-18-章-navigation-与页面通信" data-target="第-18-章-navigation-与页面通信">Navigation 与页面通信</a>
+<a class="toc-link" href="#第-19-章-架构-viewmodel-与依赖注入" data-target="第-19-章-架构-viewmodel-与依赖注入">架构、ViewModel 与依赖注入</a>
+<a class="toc-link" href="#第-20-章-网络-序列化与安全" data-target="第-20-章-网络-序列化与安全">网络、序列化与安全</a>
+<a class="toc-link" href="#第-21-章-room-datastore-文件与离线优先" data-target="第-21-章-room-datastore-文件与离线优先">Room、DataStore、文件与离线优先</a>
+<a class="toc-link" href="#第-22-章-后台任务-通知与系统集成" data-target="第-22-章-后台任务-通知与系统集成">后台任务、通知与系统集成</a>
+<a class="toc-link" href="#第-23-章-测试-调试与质量" data-target="第-23-章-测试-调试与质量">测试、调试与质量</a>
+<a class="toc-link" href="#第-24-章-性能-安全-构建与发布" data-target="第-24-章-性能-安全-构建与发布">性能、安全、构建与发布</a>
+<a class="toc-link" href="#第-25-章-毕业项目-离线优先任务管理-app" data-target="第-25-章-毕业项目-离线优先任务管理-app">毕业项目——离线优先任务管理 App</a>
+<a class="toc-link" href="#kotlin-语法速查" data-target="kotlin-语法速查">Kotlin 语法速查</a>
+<a class="toc-link" href="#常见错误清单" data-target="常见错误清单">常见错误清单</a>
+<a class="toc-link" href="#独立开发能力自检" data-target="独立开发能力自检">独立开发能力自检</a></nav>
+    <div class="side-actions"><button class="icon-btn" id="themeButton" type="button">◐ 主题</button><button class="icon-btn" id="printButton" type="button">⎙ 打印</button></div>
+  </aside>
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <span class="eyebrow">从语言到上架 · 完整学习路径</span>
+        <h1>Kotlin 全语法<br>与 Android 独立开发</h1>
+        <p class="lead">不是零散语法表，而是一条从类型系统、函数式编程和协程，到 Compose、架构、离线数据、测试与发布的完整工程路线。</p>
+        <div class="stats"><div class="stat"><strong>25</strong><span>系统章节</span></div><div class="stat"><strong>2.6 万</strong><span>字课程正文</span></div><div class="stat"><strong>53+</strong><span>Kotlin 示例组</span></div><div class="stat"><strong>1</strong><span>毕业项目</span></div></div>
+      </div>
+    </section>
+    <div class="course" id="course">
+      <section class="lesson intro-lesson" data-title="课程说明">
+<h1 id="kotlin-从零到-android-独立开发全教程">Kotlin 从零到 Android 独立开发全教程</h1>
+<blockquote>目标：系统掌握 Kotlin 语法、语言思想和 Android 现代开发栈，最终能独立分析需求、设计架构、完成应用、测试并发布。本文以 Kotlin/JVM 与 Jetpack Compose 为主，也说明传统 View/XML 的衔接点。</blockquote>
+</section>
+<section class="lesson" data-title="使用方法与学习路线" id="lesson-使用方法与学习路线"><div class="lesson-heading"><h2 id="使用方法与学习路线">使用方法与学习路线</h2></div>
+<p>不要只读。每节的示例都应亲手输入并修改，完成练习后再进入下一阶段。</p>
+<ol>
+<li><strong>语言基础（第 1～8 章）</strong>：能写命令行程序，理解空安全、函数、类、集合和异常。</li>
+<li><strong>进阶语法（第 9～15 章）</strong>：掌握泛型、扩展、高阶函数、委托、DSL、协程与 Flow。</li>
+<li><strong>Android（第 16～24 章）</strong>：掌握 Compose、状态、导航、架构、网络、存储、测试和发布。</li>
+<li><strong>毕业项目（第 25 章）</strong>：独立完成“离线优先任务管理 App”。</li>
+</ol>
+<p>建议周期：每天 1～2 小时，10～14 周。每学完一章，完成末尾练习并提交一次 Git 记录。</p>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="第 1 章：环境、程序结构与第一段 Kotlin" id="lesson-第-1-章-环境-程序结构与第一段-kotlin"><div class="lesson-heading"><h2 id="第-1-章-环境-程序结构与第一段-kotlin">第 1 章：环境、程序结构与第一段 Kotlin</h2><label class="done-toggle"><input type="checkbox" data-progress="chapter-1"><span>标记完成</span></label></div>
+<p>Android 开发安装 Android Studio（内含 JDK），新建项目时选择 Kotlin。练习纯语法可使用 IntelliJ IDEA、Android Studio 的 Scratch File，或 Kotlin Playground。</p>
+<p>Kotlin 源文件以 <code>.kt</code> 结尾。程序从顶层 <code>main</code> 函数开始：</p>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>package com.example.learn
+
+import kotlin.math.PI
+
+fun main() {
+    val radius = 3.0
+    println("面积 = ${PI * radius * radius}")
+}</code></pre></div>
+<ul>
+<li><code>package</code> 声明命名空间，通常与目录结构一致。</li>
+<li><code>import</code> 导入名称；可用 <code>as</code> 起别名：<code>import java.util.Date as JavaDate</code>。</li>
+<li>分号通常省略，注释有 <code>//</code>、<code>/* */</code> 和用于文档的 <code>/** */</code>。</li>
+<li>Kotlin 区分大小写，推荐类名用 <code>UpperCamelCase</code>，函数和变量用 <code>lowerCamelCase</code>，常量用 <code>UPPER_SNAKE_CASE</code>。</li>
+</ul>
+<h3 id="编译模型">编译模型</h3>
+<p>Kotlin/JVM 编译成 JVM 字节码，与 Java 双向调用；Android 再把字节码转换为设备使用的格式。Kotlin 还可面向 JavaScript、Native 和 Multiplatform，但 Android 初学阶段先专注 JVM。</p>
+<p><strong>练习</strong>：输出姓名、学习目标和未来 30 天的学习时长；再定义一个计算圆周长的函数。</p>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="第 2 章：变量、常量、类型与运算符" id="lesson-第-2-章-变量-常量-类型与运算符"><div class="lesson-heading"><h2 id="第-2-章-变量-常量-类型与运算符">第 2 章：变量、常量、类型与运算符</h2><label class="done-toggle"><input type="checkbox" data-progress="chapter-2"><span>标记完成</span></label></div>
+<h3 id="val-与-var">val 与 var</h3>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>val language: String = "Kotlin" // 只读引用，优先使用
+var level = 1                   // 可重新赋值，类型推断为 Int
+level += 1
+
+const val API_VERSION = "v1"   // 编译期常量，只能在顶层、object 或 companion object</code></pre></div>
+<p><code>val</code> 表示引用不能更换，不代表对象内部不可变。尽量使用不可变数据，状态变化会更容易推理。</p>
+<h3 id="基本类型">基本类型</h3>
+<p>整数：<code>Byte</code>、<code>Short</code>、<code>Int</code>、<code>Long</code>；浮点：<code>Float</code>、<code>Double</code>；另有 <code>Boolean</code>、<code>Char</code>、<code>String</code>。Kotlin 不做隐式数值扩大转换：</p>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>val count: Int = 42
+val total: Long = count.toLong()
+val hex = 0xFF
+val binary = 0b1010
+val readable = 1_000_000
+val ratio = 3.14f</code></pre></div>
+<p>字符串可用模板和多行原始字符串：</p>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>val user = "Lin"
+val message = "Hello, $user，明年你 ${20 + 1} 岁"
+val json = """
+    {
+      "name": "$user"
+    }
+""".trimIndent()</code></pre></div>
+<h3 id="运算符">运算符</h3>
+<ul>
+<li>算术：<code>+ - * / %</code>。整数相除仍为整数；需要小数先转 <code>Double</code>。</li>
+<li>比较：<code>== != &lt; &lt;= &gt; &gt;=</code>；<code>==</code> 比内容，<code>===</code> 比引用身份。</li>
+<li>逻辑：<code>&amp;&amp; || !</code>，支持短路。</li>
+<li>区间：<code>1..10</code>、<code>1..&lt;10</code>、<code>10 downTo 1</code>、<code>1..10 step 2</code>。</li>
+<li>成员判断：<code>in</code>、<code>!in</code>；类型判断：<code>is</code>、<code>!is</code>。</li>
+<li>位运算是命名函数：<code>shl</code>、<code>shr</code>、<code>ushr</code>、<code>and</code>、<code>or</code>、<code>xor</code>、<code>inv()</code>。</li>
+</ul>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>val score = 86
+val passed = score in 60..100
+val label = if (passed) "通过" else "重修"</code></pre></div>
+<p>Kotlin 可重载约定运算符，例如 <code>a + b</code> 对应 <code>a.plus(b)</code>，但应保持直觉语义。</p>
+<p><strong>练习</strong>：编写温度转换、BMI 计算器，并正确处理整数除法。</p>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="第 3 章：空安全与类型转换" id="lesson-第-3-章-空安全与类型转换"><div class="lesson-heading"><h2 id="第-3-章-空安全与类型转换">第 3 章：空安全与类型转换</h2><label class="done-toggle"><input type="checkbox" data-progress="chapter-3"><span>标记完成</span></label></div>
+<p>空指针是 Android 崩溃的常见来源。Kotlin 把“可为空”编码进类型：<code>String</code> 不能为 null，<code>String?</code> 可以。</p>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>var nickname: String? = null
+val length: Int? = nickname?.length             // 安全调用
+val display = nickname ?: "未设置"               // Elvis 运算符
+nickname?.let { println(it.uppercase()) }        // 非空才执行</code></pre></div>
+<p>常见工具：</p>
+<ul>
+<li><code>?.</code>：安全访问；链中任何一环为 null，整体返回 null。</li>
+<li><code>?:</code>：左侧为 null 时使用右侧；右侧也可 <code>return</code> 或 <code>throw</code>。</li>
+<li><code>!!</code>：断言非空，错误会抛 NPE；业务代码应极少使用。</li>
+<li><code>as?</code>：安全类型转换，失败返回 null；<code>as</code> 失败抛异常。</li>
+</ul>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>fun requireName(input: String?): String {
+    return input?.trim()?.takeIf { it.isNotEmpty() }
+        ?: throw IllegalArgumentException("姓名不能为空")
+}
+
+fun printLength(value: Any?) {
+    if (value is String) {
+        println(value.length) // 智能转换为 String
+    }
+}</code></pre></div>
+<h3 id="平台类型">平台类型</h3>
+<p>Java 代码返回的值可能显示为 <code>String!</code>，编译器无法判断其可空性。调用 Java/旧 Android API 时主动检查 null，不要盲用 <code>!!</code>。</p>
+<p><strong>练习</strong>：实现 <code>parseAge(text: String?): Int?</code>，只接受 0～150；分别用安全调用、<code>toIntOrNull</code> 和 Elvis 完成。</p>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="第 4 章：流程控制" id="lesson-第-4-章-流程控制"><div class="lesson-heading"><h2 id="第-4-章-流程控制">第 4 章：流程控制</h2><label class="done-toggle"><input type="checkbox" data-progress="chapter-4"><span>标记完成</span></label></div>
+<p>Kotlin 的 <code>if</code>、<code>when</code>、<code>try</code> 都是表达式，可以直接产生值。</p>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>val max = if (a &gt; b) a else b
+
+val description = when (score) {
+    100 -&gt; "满分"
+    in 90..99 -&gt; "优秀"
+    in 60..89 -&gt; "合格"
+    else -&gt; "继续努力"
+}
+
+fun describe(x: Any) = when (x) {
+    is Int -&gt; "整数 $x"
+    is String -&gt; "长度 ${x.length} 的文本"
+    null -&gt; "空值"
+    else -&gt; "其他"
+}</code></pre></div>
+<p>循环：</p>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>for (i in 0 until 5) println(i)
+for ((index, value) in names.withIndex()) println("$index: $value")
+
+var attempts = 3
+while (attempts &gt; 0) attempts--
+
+outer@ for (row in 0..2) {
+    for (col in 0..2) {
+        if (row == col) continue@outer
+    }
+}</code></pre></div>
+<p><code>break</code> 结束循环，<code>continue</code> 跳过本轮；标签可明确作用于哪一层循环或 lambda。优先用集合操作替代复杂循环，但不要为了“函数式”牺牲可读性。</p>
+<p><strong>练习</strong>：输出九九乘法表；使用 <code>when</code> 完成可扩展的命令解析器。</p>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="第 5 章：函数" id="lesson-第-5-章-函数"><div class="lesson-heading"><h2 id="第-5-章-函数">第 5 章：函数</h2><label class="done-toggle"><input type="checkbox" data-progress="chapter-5"><span>标记完成</span></label></div>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>fun greet(name: String, prefix: String = "你好"): String = "$prefix，$name"
+
+fun main() {
+    println(greet(name = "小林"))       // 命名参数
+    println(greet("小林", "欢迎"))
+}</code></pre></div>
+<h3 id="参数规则">参数规则</h3>
+<ul>
+<li>参数必须声明类型，默认是只读的。</li>
+<li>支持默认参数和命名参数；调用 Java 方法时通常不能使用命名参数。</li>
+<li><code>Unit</code> 类似“无有意义返回值”，可省略。</li>
+<li><code>Nothing</code> 表示永不正常返回，如只会抛异常的函数。</li>
+<li>顶层函数不必放在工具类中。</li>
+</ul>
+<h3 id="可变参数与中缀函数">可变参数与中缀函数</h3>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>fun sumAll(vararg numbers: Int) = numbers.sum()
+val values = intArrayOf(1, 2, 3)
+val total = sumAll(0, *values) // 展开数组
+
+infix fun Int.percentOf(total: Int) = this * total / 100
+val discount = 20 percentOf 500</code></pre></div>
+<h3 id="局部函数-尾递归与重载">局部函数、尾递归与重载</h3>
+<p>函数可以嵌套；<code>tailrec</code> 可优化满足条件的尾递归。可以同名重载，但仅返回类型不同不能构成重载。Android 中递归通常不如循环稳妥。</p>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>tailrec fun factorial(n: Long, acc: Long = 1): Long =
+    if (n &lt;= 1) acc else factorial(n - 1, acc * n)</code></pre></div>
+<p><strong>练习</strong>：写一个支持默认税率、命名参数的订单总价函数；再实现最大公约数。</p>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="第 6 章：类、对象与构造" id="lesson-第-6-章-类-对象与构造"><div class="lesson-heading"><h2 id="第-6-章-类-对象与构造">第 6 章：类、对象与构造</h2><label class="done-toggle"><input type="checkbox" data-progress="chapter-6"><span>标记完成</span></label></div>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>class User(
+    val id: Long,
+    name: String,
+    var age: Int = 0
+) {
+    var name: String = name.trim()
+        set(value) {
+            require(value.isNotBlank())
+            field = value.trim()
+        }
+
+    val isAdult: Boolean
+        get() = age &gt;= 18
+
+    init {
+        require(id &gt; 0) { "id 必须为正数" }
+    }
+
+    constructor(id: Long, name: String) : this(id, name, 0)
+
+    fun birthday() { age++ }
+}</code></pre></div>
+<ul>
+<li>主构造器写在类名后，初始化逻辑放 <code>init</code>。</li>
+<li><code>field</code> 是自定义访问器里的幕后字段。</li>
+<li>没有 <code>new</code>，直接 <code>User(1, "Lin")</code>。</li>
+<li>Kotlin 类和成员默认 <code>final</code>；允许继承需显式 <code>open</code>，重写用 <code>override</code>。</li>
+<li>可见性：<code>public</code>（默认）、<code>internal</code>（模块内）、<code>protected</code>、<code>private</code>。</li>
+</ul>
+<h3 id="继承与抽象">继承与抽象</h3>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>abstract class Animal(val name: String) {
+    abstract fun sound(): String
+    open fun introduce() = "$name: ${sound()}"
+}
+
+class Cat(name: String) : Animal(name) {
+    override fun sound() = "喵"
+}</code></pre></div>
+<p>优先组合而非深层继承。Android 状态对象通常用数据类，行为由 ViewModel/用例组织。</p>
+<p><strong>练习</strong>：设计 <code>BankAccount</code>，余额只能通过 <code>deposit</code> 和 <code>withdraw</code> 修改，并验证非法金额。</p>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="第 7 章：接口、数据类、枚举、密封类型与 object" id="lesson-第-7-章-接口-数据类-枚举-密封类型与-object"><div class="lesson-heading"><h2 id="第-7-章-接口-数据类-枚举-密封类型与-object">第 7 章：接口、数据类、枚举、密封类型与 object</h2><label class="done-toggle"><input type="checkbox" data-progress="chapter-7"><span>标记完成</span></label></div>
+<h3 id="接口">接口</h3>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>interface Repository&lt;T&gt; {
+    suspend fun get(id: Long): T?
+    fun isValidId(id: Long) = id &gt; 0
+}</code></pre></div>
+<p>接口可有默认实现但没有构造器。类可实现多个接口，冲突时用 <code>super&lt;接口名&gt;.方法()</code> 指定。</p>
+<h3 id="数据类与解构">数据类与解构</h3>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>data class Task(val id: Long, val title: String, val done: Boolean = false)
+
+val task = Task(1, "学习 Kotlin")
+val updated = task.copy(done = true)
+val (id, title, done) = updated</code></pre></div>
+<p>数据类自动生成 <code>equals/hashCode/toString/componentN/copy</code>。主构造器至少有一个 <code>val/var</code> 参数。数组属性比较是引用语义，必要时使用内容比较函数。</p>
+<h3 id="enum-与-sealed">enum 与 sealed</h3>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>enum class Priority(val weight: Int) { LOW(1), MEDIUM(2), HIGH(3) }
+
+sealed interface UiState&lt;out T&gt; {
+    data object Loading : UiState&lt;Nothing&gt;
+    data class Success&lt;T&gt;(val data: T) : UiState&lt;T&gt;
+    data class Error(val message: String) : UiState&lt;Nothing&gt;
+}
+
+fun render(state: UiState&lt;List&lt;Task&gt;&gt;) = when (state) {
+    UiState.Loading -&gt; "加载中"
+    is UiState.Success -&gt; "${state.data.size} 条"
+    is UiState.Error -&gt; state.message
+}</code></pre></div>
+<p><code>sealed</code> 限定可能的子类型，让 <code>when</code> 能穷尽检查，非常适合 UI 状态和事件。<code>enum</code> 适合固定同构常量。</p>
+<h3 id="object-与伴生对象">object 与伴生对象</h3>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>object AppLogger { fun log(message: String) = println(message) }
+
+class Token private constructor(val value: String) {
+    companion object {
+        fun parse(raw: String): Token? = raw.takeIf(String::isNotBlank)?.let(::Token)
+    }
+}</code></pre></div>
+<p><code>object</code> 是线程安全惰性初始化的单例声明；对象表达式 <code>object : Listener { ... }</code> 用于匿名实现。避免把可变全局状态塞入单例。</p>
+<p><strong>练习</strong>：用密封接口建模登录的 Idle、Loading、Success、Error 四种状态。</p>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="第 8 章：数组、集合与序列" id="lesson-第-8-章-数组-集合与序列"><div class="lesson-heading"><h2 id="第-8-章-数组-集合与序列">第 8 章：数组、集合与序列</h2><label class="done-toggle"><input type="checkbox" data-progress="chapter-8"><span>标记完成</span></label></div>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>val readOnly = listOf("A", "B")
+val mutable = mutableListOf("A")
+mutable += "B"
+
+val ids = setOf(1, 2, 2)                 // 去重
+val users = mapOf(1L to "Lin", 2L to "Yu")
+val ints = intArrayOf(1, 2, 3)           // 原生类型数组</code></pre></div>
+<p>只读接口不等于绝对不可变；不要把底层可变集合泄漏出去。常见操作：</p>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>val result = tasks
+    .filterNot { it.done }
+    .sortedByDescending { it.id }
+    .map { it.title }
+
+val byDone = tasks.groupBy(Task::done)
+val idMap = tasks.associateBy(Task::id)
+val first = tasks.firstOrNull { it.id == 1L }
+val total = tasks.fold(0) { acc, _ -&gt; acc + 1 }</code></pre></div>
+<p><code>map</code> 保持一一映射，<code>flatMap</code> 展平多层；<code>any/all/none/count</code> 做条件统计；<code>zip</code> 合并相同位置；<code>chunked/windowed</code> 分块或滑窗。</p>
+<p>大量链式操作可用 <code>Sequence</code> 延迟执行，减少中间集合：</p>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>val names = (1..1_000_000).asSequence()
+    .filter { it % 2 == 0 }
+    .map { "No.$it" }
+    .take(5)
+    .toList()</code></pre></div>
+<p>小集合不必滥用 Sequence；它有额外调用开销。</p>
+<p><strong>练习</strong>：对任务列表按完成状态分组，统计每组数量，并找出标题最长的未完成任务。</p>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="第 9 章：Lambda、高阶函数与函数类型" id="lesson-第-9-章-lambda-高阶函数与函数类型"><div class="lesson-heading"><h2 id="第-9-章-lambda-高阶函数与函数类型">第 9 章：Lambda、高阶函数与函数类型</h2><label class="done-toggle"><input type="checkbox" data-progress="chapter-9"><span>标记完成</span></label></div>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>val square: (Int) -&gt; Int = { value -&gt; value * value }
+
+fun calculate(a: Int, b: Int, operation: (Int, Int) -&gt; Int): Int =
+    operation(a, b)
+
+val answer = calculate(3, 4) { x, y -&gt; x + y }</code></pre></div>
+<p>最后一个参数是函数时可使用尾随 lambda；只有一个参数时可用 <code>it</code>。函数引用：<code>::println</code>、<code>String::length</code>、<code>user::birthday</code>。</p>
+<h3 id="闭包与返回">闭包与返回</h3>
+<p>Lambda 能捕获外部变量。<code>forEach</code> 是内联函数，裸 <code>return</code> 可能从外层函数返回；用 <code>return@forEach</code> 仅跳过本次。复杂控制流更适合普通 <code>for</code>。</p>
+<h3 id="inline-noinline-crossinline">inline、noinline、crossinline</h3>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>inline fun &lt;T&gt; measure(block: () -&gt; T): T {
+    val start = System.nanoTime()
+    return block().also { println(System.nanoTime() - start) }
+}</code></pre></div>
+<p><code>inline</code> 把函数体和 lambda 展开到调用处，可减少函数对象并支持非局部返回；<code>noinline</code> 禁止某个参数内联，<code>crossinline</code> 禁止非局部返回。只给短小高阶函数使用。</p>
+<p><strong>练习</strong>：实现 <code>retry(times, block)</code>；失败时重试，最终仍失败则抛出最后一次异常。</p>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="第 10 章：作用域函数与扩展" id="lesson-第-10-章-作用域函数与扩展"><div class="lesson-heading"><h2 id="第-10-章-作用域函数与扩展">第 10 章：作用域函数与扩展</h2><label class="done-toggle"><input type="checkbox" data-progress="chapter-10"><span>标记完成</span></label></div>
+<p>五个作用域函数本质都是高阶函数：</p>
+<div class="table-scroll"><table><thead><tr><th>函数</th><th>对象引用</th><th>返回值</th><th>典型用途</th></tr></thead><tbody>
+<tr><td><code>let</code></td><td><code>it</code></td><td>lambda 结果</td><td>空安全转换</td></tr>
+<tr><td><code>run</code></td><td><code>this</code></td><td>lambda 结果</td><td>配置并计算</td></tr>
+<tr><td><code>with</code></td><td><code>this</code></td><td>lambda 结果</td><td>对现有对象执行多步</td></tr>
+<tr><td><code>apply</code></td><td><code>this</code></td><td>对象本身</td><td>构建/配置对象</td></tr>
+<tr><td><code>also</code></td><td><code>it</code></td><td>对象本身</td><td>日志、校验等旁路动作</td></tr>
+</tbody></table></div>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>val intent = Intent(context, DetailActivity::class.java).apply {
+    putExtra("task_id", task.id)
+}
+
+val normalized = input?.trim()?.takeIf { it.isNotEmpty() }</code></pre></div>
+<p>不要连续嵌套多个作用域函数，<code>this/it</code> 会难以辨认。</p>
+<h3 id="扩展函数与属性">扩展函数与属性</h3>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>fun String.toSafeInt(default: Int = 0) = trim().toIntOrNull() ?: default
+val String.initial: Char? get() = firstOrNull()</code></pre></div>
+<p>扩展是静态分发，不会真正修改类，也不能访问其私有成员。成员函数与扩展同名时成员优先。扩展适合无状态、语义内聚的工具；不要制造难以追踪的“万能扩展”。</p>
+<p><strong>练习</strong>：为 <code>Long</code> 编写毫秒转 <code>mm:ss</code> 的扩展属性，并测试边界。</p>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="第 11 章：泛型、型变与类型系统进阶" id="lesson-第-11-章-泛型-型变与类型系统进阶"><div class="lesson-heading"><h2 id="第-11-章-泛型-型变与类型系统进阶">第 11 章：泛型、型变与类型系统进阶</h2><label class="done-toggle"><input type="checkbox" data-progress="chapter-11"><span>标记完成</span></label></div>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>class Box&lt;T&gt;(val value: T)
+
+fun &lt;T : Comparable&lt;T&gt;&gt; maxOfTwo(a: T, b: T): T = if (a &gt;= b) a else b
+
+fun &lt;T&gt; requireBoth(value: T) where T : CharSequence, T : Comparable&lt;T&gt; = value</code></pre></div>
+<p>JVM 泛型通常发生类型擦除。Kotlin 用声明处型变表达安全关系：生产者 <code>out</code>，消费者 <code>in</code>。</p>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>interface Source&lt;out T&gt; { fun next(): T }
+interface Sink&lt;in T&gt; { fun accept(value: T) }</code></pre></div>
+<ul>
+<li><code>List&lt;Dog&gt;</code> 可当作 <code>List&lt;Animal&gt;</code>，因为只读列表是 <code>List&lt;out T&gt;</code>。</li>
+<li>可变列表既读又写，不能安全协变。</li>
+<li>使用处投影：<code>Array&lt;out Number&gt;</code>、<code>Comparable&lt;in String&gt;</code>。</li>
+<li>星投影 <code>List&lt;*&gt;</code> 表示元素类型未知，读取为 <code>Any?</code>。</li>
+</ul>
+<h3 id="reified">reified</h3>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>inline fun &lt;reified T&gt; Any?.isType(): Boolean = this is T</code></pre></div>
+<p>普通泛型不能直接 <code>is T</code>；内联的 <code>reified</code> 类型参数会保留调用点类型。常用于 JSON 解析、导航和依赖获取。</p>
+<h3 id="typealias-与值类">typealias 与值类</h3>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>typealias TaskId = Long
+
+@JvmInline
+value class Email(val value: String)</code></pre></div>
+<p><code>typealias</code> 只是别名，没有类型安全隔离；值类可创建轻量强类型，但要注意装箱、Java 互操作与序列化配置。</p>
+<p><strong>练习</strong>：设计泛型 <code>Result&lt;T&gt;</code>；写 <code>map</code> 函数把成功值转换、错误原样传递。</p>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="第 12 章：委托、运算符、解构与 DSL" id="lesson-第-12-章-委托-运算符-解构与-dsl"><div class="lesson-heading"><h2 id="第-12-章-委托-运算符-解构与-dsl">第 12 章：委托、运算符、解构与 DSL</h2><label class="done-toggle"><input type="checkbox" data-progress="chapter-12"><span>标记完成</span></label></div>
+<h3 id="属性委托">属性委托</h3>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>val config by lazy { loadConfig() }
+var name by Delegates.observable("") { _, old, new -&gt;
+    println("$old -&gt; $new")
+}</code></pre></div>
+<p>自定义委托实现 <code>getValue</code>/<code>setValue</code>。Android 中 Compose 的 <code>by remember { mutableStateOf(...) }</code> 就依赖委托约定。</p>
+<h3 id="类委托">类委托</h3>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>class LoggingRepository(
+    private val delegate: Repository&lt;Task&gt;
+) : Repository&lt;Task&gt; by delegate</code></pre></div>
+<p>类委托减少样板代码，适合装饰器，但覆写行为要保持清晰。</p>
+<h3 id="运算符约定与解构">运算符约定与解构</h3>
+<p>可通过 <code>operator fun plus</code>、<code>get/set</code>、<code>contains</code>、<code>invoke</code> 等约定定制语法。<code>component1()</code> 等支持解构。业务领域对象可适度使用，避免“看不懂的魔法”。</p>
+<h3 id="dsl">DSL</h3>
+<p>带接收者的函数类型 <code>T.() -&gt; Unit</code> 是 Kotlin DSL 核心：</p>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>class RequestBuilder {
+    var url = ""
+    fun header(name: String, value: String) { /* ... */ }
+}
+
+fun request(block: RequestBuilder.() -&gt; Unit) = RequestBuilder().apply(block)
+
+val req = request {
+    url = "https://example.com"
+    header("Accept", "application/json")
+}</code></pre></div>
+<p><code>@DslMarker</code> 可限制嵌套 DSL 中错误的外层接收者访问。</p>
+<p><strong>练习</strong>：编写一个 <code>html { body { text("Hello") } }</code> 的微型 DSL。</p>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="第 13 章：异常、Result 与资源管理" id="lesson-第-13-章-异常-result-与资源管理"><div class="lesson-heading"><h2 id="第-13-章-异常-result-与资源管理">第 13 章：异常、Result 与资源管理</h2><label class="done-toggle"><input type="checkbox" data-progress="chapter-13"><span>标记完成</span></label></div>
+<p>Kotlin 没有受检异常。<code>throw</code> 和 <code>try</code> 都是表达式：</p>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>val number = try {
+    input.toInt()
+} catch (e: NumberFormatException) {
+    0
+} finally {
+    println("解析结束")
+}</code></pre></div>
+<p>只捕获能处理的具体异常，不要静默吞掉 <code>Exception</code>。参数/状态校验：</p>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>require(age &gt;= 0) { "年龄不能为负" }
+check(isInitialized) { "尚未初始化" }
+val value = requireNotNull(nullable)</code></pre></div>
+<p>自动关闭资源用 <code>use</code>：</p>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>val text = file.bufferedReader().use { it.readText() }</code></pre></div>
+<p><code>runCatching { ... }</code> 返回 <code>kotlin.Result</code>，适合局部转换，但大型业务错误更适合显式密封类型，区分网络错误、认证错误、验证错误等。</p>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>sealed interface AppError {
+    data object Offline : AppError
+    data class Server(val code: Int) : AppError
+}</code></pre></div>
+<p><strong>练习</strong>：把不可靠的文本读取包装成明确的 Success/Failure 类型，而不是返回 null。</p>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="第 14 章：Java 互操作、注解与反射" id="lesson-第-14-章-java-互操作-注解与反射"><div class="lesson-heading"><h2 id="第-14-章-java-互操作-注解与反射">第 14 章：Java 互操作、注解与反射</h2><label class="done-toggle"><input type="checkbox" data-progress="chapter-14"><span>标记完成</span></label></div>
+<p>Kotlin 可直接使用 Java 类。关键点：</p>
+<ul>
+<li>Java getter/setter 常表现为 Kotlin 属性。</li>
+<li><code>@JvmStatic</code> 暴露静态风格方法，<code>@JvmField</code> 暴露字段，<code>@JvmOverloads</code> 为默认参数生成重载。</li>
+<li>Java 关键字冲突用反引号，如 <code>foo.</code>is<code>() </code>。</li>
+<li><code>@Throws(IOException::class)</code> 向 Java 声明异常。</li>
+<li>SAM 接口可用 lambda：<code>view.setOnClickListener { ... }</code>。</li>
+</ul>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>class ApiClient @JvmOverloads constructor(
+    val baseUrl: String,
+    val timeout: Long = 5_000
+) {
+    companion object {
+        @JvmStatic fun create() = ApiClient("https://example.com")
+    }
+}</code></pre></div>
+<p>注解可指定使用点：<code>@field:Inject</code>、<code>@get:JsonName</code>、<code>@param:Named</code>。Android 常见编译时代码生成由 KSP 驱动。反射使用 <code>::class</code>，但 Android 上需关注体积与性能，优先代码生成。</p>
+<p><strong>练习</strong>：写一个供 Java 调用的 Kotlin 工具类，并检查生成的方法签名。</p>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="第 15 章：协程与 Flow" id="lesson-第-15-章-协程与-flow"><div class="lesson-heading"><h2 id="第-15-章-协程与-flow">第 15 章：协程与 Flow</h2><label class="done-toggle"><input type="checkbox" data-progress="chapter-15"><span>标记完成</span></label></div>
+<p>协程是可挂起、非阻塞的并发任务。<code>suspend</code> 表示函数可挂起，只能从协程或另一个挂起函数调用。</p>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>suspend fun loadUser(id: Long): User = withContext(Dispatchers.IO) {
+    api.fetchUser(id)
+}
+
+viewModelScope.launch {
+    try {
+        val user = loadUser(1)
+        _uiState.value = UiState.Success(user)
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: IOException) {
+        _uiState.value = UiState.Error("网络不可用")
+    }
+}</code></pre></div>
+<h3 id="核心概念">核心概念</h3>
+<ul>
+<li><code>CoroutineScope</code> 定义生命周期；Android 使用 <code>viewModelScope</code>、<code>lifecycleScope</code>。</li>
+<li><code>launch</code> 返回 <code>Job</code>，无结果；<code>async</code> 返回 <code>Deferred&lt;T&gt;</code>，通过 <code>await()</code> 取结果。</li>
+<li><code>Dispatchers.Main</code> 更新 UI；<code>IO</code> 阻塞 I/O；<code>Default</code> CPU 密集计算。</li>
+<li><code>withContext</code> 切换上下文并返回结果；不要用 <code>GlobalScope</code>。</li>
+<li>取消是协作式的；挂起函数会检查取消，CPU 循环用 <code>ensureActive()</code>/<code>yield()</code>。</li>
+<li><code>coroutineScope</code> 子任务失败会取消兄弟；<code>supervisorScope</code> 隔离子任务失败。</li>
+<li><code>CoroutineExceptionHandler</code> 不是普通 <code>try/catch</code> 的替代品。</li>
+</ul>
+<p>并行请求：</p>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>suspend fun dashboard() = coroutineScope {
+    val user = async { api.user() }
+    val news = async { api.news() }
+    Dashboard(user.await(), news.await())
+}</code></pre></div>
+<h3 id="flow">Flow</h3>
+<p><code>Flow&lt;T&gt;</code> 是冷数据流，每次收集重新执行。<code>StateFlow</code> 保存最新状态，<code>SharedFlow</code> 广播事件/数据。</p>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>val tasks: Flow&lt;List&lt;Task&gt;&gt; = dao.observeTasks()
+    .map { entities -&gt; entities.map(TaskEntity::toDomain) }
+    .distinctUntilChanged()
+
+val uiState: StateFlow&lt;TaskUiState&gt; = combine(tasks, query) { list, q -&gt;
+    TaskUiState(list.filter { q in it.title })
+}.stateIn(
+    scope = viewModelScope,
+    started = SharingStarted.WhileSubscribed(5_000),
+    initialValue = TaskUiState()
+)</code></pre></div>
+<p>常用操作符：<code>map/filter/transform</code>、<code>debounce</code>、<code>combine</code>、<code>zip</code>、<code>flatMapLatest</code>、<code>catch</code>、<code>retry</code>、<code>onStart</code>、<code>flowOn</code>。UI 在 Compose 中使用生命周期感知的 <code>collectAsStateWithLifecycle()</code>。</p>
+<p>一次性 UI 事件要谨慎建模：导航常由状态变化触发；必须广播时使用带缓冲策略的 <code>SharedFlow</code>，不要用容易丢失事件的临时布尔值。</p>
+<p><strong>练习</strong>：制作搜索流：输入防抖 300ms，最新查询取消旧请求，错误转为 UI 状态。</p>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="第 16 章：Android 项目与组件基础" id="lesson-第-16-章-android-项目与组件基础"><div class="lesson-heading"><h2 id="第-16-章-android-项目与组件基础">第 16 章：Android 项目与组件基础</h2><label class="done-toggle"><input type="checkbox" data-progress="chapter-16"><span>标记完成</span></label></div>
+<p>典型模块：</p>
+<div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-code" type="button">复制</button></div><pre><code>app/
+  src/main/
+    AndroidManifest.xml
+    java/com/example/app/
+    res/
+  build.gradle.kts</code></pre></div>
+<p>Gradle Kotlin DSL 文件使用 <code>.gradle.kts</code>。版本集中到 version catalog 可减少重复。应用最重要的组件：</p>
+<ul>
+<li><code>Activity</code>：一个用户可进入的界面容器；Compose App 常用单 Activity。</li>
+<li><code>Service</code>：后台长任务入口；普通延迟任务优先 WorkManager，持续用户可感知任务使用前台服务。</li>
+<li><code>BroadcastReceiver</code>：接收系统/应用广播，执行时间要短。</li>
+<li><code>ContentProvider</code>：跨进程共享结构化数据。</li>
+</ul>
+<p>Manifest 声明组件、权限和 App 配置。运行时危险权限必须在使用前解释并请求；不要请求业务不需要的权限。</p>
+<h3 id="生命周期">生命周期</h3>
+<p>Activity 典型回调：<code>onCreate → onStart → onResume</code>；离开时 <code>onPause → onStop → onDestroy</code>。配置变化可能重建 Activity，UI 状态应放 ViewModel/持久层或使用可保存状态，而不是依赖 Activity 字段。</p>
+<h3 id="context-与-intent">Context 与 Intent</h3>
+<p><code>Context</code> 访问资源和系统服务。Activity Context 带界面主题且受生命周期约束；Application Context 生命周期与进程一致。不要让单例长期持有 Activity/View 引用。</p>
+<p>Intent 可显式启动应用内组件，也可隐式请求系统能力。跨组件数据应小而可序列化，大数据存数据库/文件并传 ID 或 URI。</p>
+<p><strong>练习</strong>：新建空 Compose 项目，观察生命周期日志；旋转屏幕后验证 ViewModel 状态仍在。</p>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="第 17 章：Jetpack Compose UI" id="lesson-第-17-章-jetpack-compose-ui"><div class="lesson-heading"><h2 id="第-17-章-jetpack-compose-ui">第 17 章：Jetpack Compose UI</h2><label class="done-toggle"><input type="checkbox" data-progress="chapter-17"><span>标记完成</span></label></div>
+<p>Compose 用 Kotlin 函数声明 UI：</p>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>@Composable
+fun TaskRow(
+    task: Task,
+    onToggle: (Long) -&gt; Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onToggle(task.id) }
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Checkbox(
+            checked = task.done,
+            onCheckedChange = { onToggle(task.id) }
+        )
+        Spacer(Modifier.width(12.dp))
+        Text(task.title, style = MaterialTheme.typography.bodyLarge)
+    }
+}</code></pre></div>
+<h3 id="核心规则">核心规则</h3>
+<ul>
+<li>Composable 可能频繁重组；函数应快速、无副作用、结果由参数和状态决定。</li>
+<li><code>Modifier</code> 顺序会改变结果，调用方传入的 modifier 通常放最外层。</li>
+<li>状态向下、事件向上：无状态组件接收值与回调，屏幕层连接 ViewModel。</li>
+<li>列表使用 <code>LazyColumn</code>，为动态项提供稳定 <code>key</code>。</li>
+</ul>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>LazyColumn(contentPadding = PaddingValues(16.dp)) {
+    items(tasks, key = Task::id) { task -&gt;
+        TaskRow(task, onToggle)
+    }
+}</code></pre></div>
+<h3 id="状态与-remember">状态与 remember</h3>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>var query by rememberSaveable { mutableStateOf("") }
+OutlinedTextField(value = query, onValueChange = { query = it })</code></pre></div>
+<ul>
+<li><code>remember</code> 跨重组保留，不能跨进程/通常不能跨 Activity 重建。</li>
+<li><code>rememberSaveable</code> 保存 Bundle 可支持的少量 UI 状态。</li>
+<li>业务状态属于 ViewModel/数据库，不应堆在 Composable。</li>
+<li>对已有状态的派生计算用 <code>derivedStateOf</code>（仅在能减少无效更新时）。</li>
+</ul>
+<h3 id="副作用">副作用</h3>
+<ul>
+<li><code>LaunchedEffect(key)</code> 启动随 key 变化取消重启的协程。</li>
+<li><code>DisposableEffect</code> 注册并清理监听。</li>
+<li><code>SideEffect</code> 在成功重组后同步外部对象。</li>
+<li><code>rememberUpdatedState</code> 在不重启 effect 的情况下读取最新回调。</li>
+<li><code>produceState</code> 把异步源转为 Compose State。</li>
+</ul>
+<h3 id="主题-无障碍与适配">主题、无障碍与适配</h3>
+<p>使用 Material 3 的颜色、排版、形状；支持深色模式和动态色。交互目标足够大，图片提供 <code>contentDescription</code>，自定义组件补充 semantics。使用 WindowSizeClass/自适应布局处理手机、平板和折叠屏；不要按固定像素设计。</p>
+<p><strong>练习</strong>：实现任务列表、空状态、加载状态、错误状态、搜索框与深色主题预览。</p>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="第 18 章：Navigation 与页面通信" id="lesson-第-18-章-navigation-与页面通信"><div class="lesson-heading"><h2 id="第-18-章-navigation-与页面通信">第 18 章：Navigation 与页面通信</h2><label class="done-toggle"><input type="checkbox" data-progress="chapter-18"><span>标记完成</span></label></div>
+<p>Compose Navigation 用路由组织目的地。原则：只传 ID 等最小参数，在目标页面从数据层重新加载；不要把完整对象塞进路由。</p>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>@Composable
+fun AppNavHost(navController: NavHostController) {
+    NavHost(navController, startDestination = "tasks") {
+        composable("tasks") {
+            TaskListScreen(onOpen = { id -&gt; navController.navigate("task/$id") })
+        }
+        composable(
+            route = "task/{id}",
+            arguments = listOf(navArgument("id") { type = NavType.LongType })
+        ) { entry -&gt;
+            TaskDetailRoute(id = entry.arguments?.getLong("id") ?: return@composable)
+        }
+    }
+}</code></pre></div>
+<p>项目允许时优先使用类型安全路由。处理返回栈、深链和恢复：</p>
+<ul>
+<li>登录后清理登录页：<code>popUpTo</code> 配合 <code>inclusive</code>。</li>
+<li>底部导航保存各 tab 状态并避免重复目的地。</li>
+<li>Deep Link 输入是不可信数据，必须验证参数与权限。</li>
+<li>导航动作由屏幕边界处理，纯 UI 组件只发事件。</li>
+</ul>
+<p><strong>练习</strong>：实现列表→详情→编辑，保存后返回并让列表自动更新。</p>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="第 19 章：架构、ViewModel 与依赖注入" id="lesson-第-19-章-架构-viewmodel-与依赖注入"><div class="lesson-heading"><h2 id="第-19-章-架构-viewmodel-与依赖注入">第 19 章：架构、ViewModel 与依赖注入</h2><label class="done-toggle"><input type="checkbox" data-progress="chapter-19"><span>标记完成</span></label></div>
+<p>推荐分层（按复杂度裁剪）：</p>
+<div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-code" type="button">复制</button></div><pre><code>UI (Compose + ViewModel)
+        ↓
+Domain（用例 + 领域模型，可选）
+        ↓
+Data（Repository + 本地/远程数据源）</code></pre></div>
+<p>单向数据流：ViewModel 暴露不可变 <code>StateFlow&lt;UiState&gt;</code>；UI 发送事件；ViewModel 调用用例/仓库并更新状态。</p>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>data class TaskUiState(
+    val tasks: List&lt;Task&gt; = emptyList(),
+    val loading: Boolean = false,
+    val message: String? = null
+)
+
+sealed interface TaskAction {
+    data class Toggle(val id: Long) : TaskAction
+    data class Search(val text: String) : TaskAction
+}
+
+class TaskViewModel(
+    private val repository: TaskRepository
+) : ViewModel() {
+    val state = repository.observeAll()
+        .map { TaskUiState(tasks = it) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TaskUiState(loading = true))
+
+    fun onAction(action: TaskAction) {
+        when (action) {
+            is TaskAction.Toggle -&gt; viewModelScope.launch { repository.toggle(action.id) }
+            is TaskAction.Search -&gt; Unit
+        }
+    }
+}</code></pre></div>
+<h3 id="repository-与单一事实源">Repository 与单一事实源</h3>
+<p>Repository 隐藏数据来源。离线优先 App 通常让数据库成为单一事实源：UI 观察数据库；同步器从网络更新数据库，而不是同时让 UI 拼接两个来源。</p>
+<h3 id="依赖注入">依赖注入</h3>
+<p>构造器注入最易测试。大型 Android 项目可用 Hilt 管理对象图和生命周期；小项目可手工组装。不要把 Service Locator 当成无处不在的全局变量。</p>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>@HiltViewModel
+class TaskViewModel @Inject constructor(
+    private val repository: TaskRepository
+) : ViewModel()</code></pre></div>
+<p><strong>练习</strong>：把内存仓库注入 ViewModel，写 fake 替换真实实现，并验证状态变化。</p>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="第 20 章：网络、序列化与安全" id="lesson-第-20-章-网络-序列化与安全"><div class="lesson-heading"><h2 id="第-20-章-网络-序列化与安全">第 20 章：网络、序列化与安全</h2><label class="done-toggle"><input type="checkbox" data-progress="chapter-20"><span>标记完成</span></label></div>
+<p>常见组合是 HTTP 客户端/Retrofit + Kotlin 序列化或 Moshi。DTO、数据库实体和领域模型分离可隔离后端/存储变化。</p>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>@Serializable
+data class TaskDto(
+    val id: Long,
+    val title: String,
+    @SerialName("is_done") val done: Boolean
+)
+
+interface TaskApi {
+    @GET("tasks")
+    suspend fun tasks(): List&lt;TaskDto&gt;
+}</code></pre></div>
+<p>Repository 负责映射与错误：</p>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>suspend fun refresh() {
+    val remote = api.tasks()
+    dao.replaceAll(remote.map(TaskDto::toEntity))
+}</code></pre></div>
+<p>生产质量要求：</p>
+<ul>
+<li>设置连接/读取超时；只对幂等请求谨慎重试并加退避。</li>
+<li>区分无网、超时、HTTP 状态、解析失败和业务错误。</li>
+<li>不在日志打印 token、密码和个人信息。</li>
+<li>仅使用 HTTPS；密钥不能安全地硬编码在客户端，真正机密放服务端。</li>
+<li>鉴权 token 使用合适的加密/系统凭据能力，处理过期刷新并避免并发刷新风暴。</li>
+<li>分页使用 Paging；大文件使用流式读写并支持取消。</li>
+</ul>
+<p><strong>练习</strong>：用 Fake API 模拟 200、401、500、超时和格式错误，为每种情况产生明确 UI 状态。</p>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="第 21 章：Room、DataStore、文件与离线优先" id="lesson-第-21-章-room-datastore-文件与离线优先"><div class="lesson-heading"><h2 id="第-21-章-room-datastore-文件与离线优先">第 21 章：Room、DataStore、文件与离线优先</h2><label class="done-toggle"><input type="checkbox" data-progress="chapter-21"><span>标记完成</span></label></div>
+<h3 id="room">Room</h3>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>@Entity(tableName = "tasks")
+data class TaskEntity(
+    @PrimaryKey val id: Long,
+    val title: String,
+    val done: Boolean,
+    val updatedAt: Long
+)
+
+@Dao
+interface TaskDao {
+    @Query("SELECT * FROM tasks ORDER BY updatedAt DESC")
+    fun observeAll(): Flow&lt;List&lt;TaskEntity&gt;&gt;
+
+    @Upsert
+    suspend fun upsertAll(items: List&lt;TaskEntity&gt;)
+
+    @Query("UPDATE tasks SET done = :done WHERE id = :id")
+    suspend fun setDone(id: Long, done: Boolean)
+}</code></pre></div>
+<p>数据库操作应离开主线程。版本升级必须提供 migration 并测试；生产应用不要用破坏性迁移丢用户数据。多步原子操作用 <code>@Transaction</code>。</p>
+<h3 id="datastore">DataStore</h3>
+<p>Preferences DataStore 适合少量无模式设置；Proto DataStore 适合强类型配置。它们不是复杂关系数据的数据库。不要用旧式 SharedPreferences 承担新项目的响应式配置需求。</p>
+<h3 id="文件与-uri">文件与 URI</h3>
+<p>应用私有文件无需存储权限。用户选择文档使用系统文件选择器和内容 URI；不要假设 URI 是真实文件路径。共享文件使用 FileProvider，不暴露 <code>file://</code>。</p>
+<h3 id="离线同步">离线同步</h3>
+<p>写入先落本地并标记待同步；WorkManager 在网络可用时上传。需要设计冲突策略：最后写入胜出、字段合并、服务端版本号或人工处理。任务需幂等，避免重试造成重复记录。</p>
+<p><strong>练习</strong>：完成 Room CRUD，杀进程后数据仍存在；再为数据库写迁移测试。</p>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="第 22 章：后台任务、通知与系统集成" id="lesson-第-22-章-后台任务-通知与系统集成"><div class="lesson-heading"><h2 id="第-22-章-后台任务-通知与系统集成">第 22 章：后台任务、通知与系统集成</h2><label class="done-toggle"><input type="checkbox" data-progress="chapter-22"><span>标记完成</span></label></div>
+<ul>
+<li><strong>WorkManager</strong>：可延迟、要求最终执行的约束任务，如同步、上传、清理。</li>
+<li><strong>前台服务</strong>：用户明确感知且必须持续的工作，如导航/媒体；必须展示通知并遵守对应服务类型规定。</li>
+<li><strong>普通协程</strong>：只在页面或进程生命周期内完成的任务。</li>
+</ul>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>val request = PeriodicWorkRequestBuilder&lt;SyncWorker&gt;(12, TimeUnit.HOURS)
+    .setConstraints(Constraints(requiredNetworkType = NetworkType.CONNECTED))
+    .build()
+
+WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+    "task-sync",
+    ExistingPeriodicWorkPolicy.KEEP,
+    request
+)</code></pre></div>
+<p>Worker 返回 <code>success/failure/retry</code>；重试需退避，输入输出数据应小。通知要创建 channel（支持的系统版本）、请求必要权限、提供有意义操作，并避免打扰。闹钟只用于用户可感知且时间精确的场景。</p>
+<p><strong>练习</strong>：添加网络约束的唯一同步任务，重复点击同步也不会排队多个实例。</p>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="第 23 章：测试、调试与质量" id="lesson-第-23-章-测试-调试与质量"><div class="lesson-heading"><h2 id="第-23-章-测试-调试与质量">第 23 章：测试、调试与质量</h2><label class="done-toggle"><input type="checkbox" data-progress="chapter-23"><span>标记完成</span></label></div>
+<p>测试金字塔：大量快速单元测试，适量集成测试，少量关键 UI 测试。</p>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>class ToggleTaskUseCaseTest {
+    @Test
+    fun `toggle changes task state`() = runTest {
+        val repo = FakeTaskRepository(Task(1, "Learn", false))
+        ToggleTaskUseCase(repo)(1)
+        assertTrue(repo.task.done)
+    }
+}</code></pre></div>
+<p>协程测试使用测试调度器和 <code>runTest</code>；Flow 可直接 <code>first()</code>、<code>take(n).toList()</code> 或使用合适测试工具。测试不要依赖真实时间和网络。</p>
+<p>Compose 测试通过语义查找：</p>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>composeRule.onNodeWithText("学习 Kotlin").assertIsDisplayed()
+composeRule.onNodeWithContentDescription("完成任务").performClick()</code></pre></div>
+<p>应覆盖：</p>
+<ul>
+<li>领域规则和边界值。</li>
+<li>ViewModel 的 Loading/Success/Error 与取消。</li>
+<li>Repository 的缓存、映射、重试、离线与冲突。</li>
+<li>Room migration。</li>
+<li>关键用户流程和无障碍语义。</li>
+</ul>
+<p>调试时先稳定复现，再看堆栈最内层业务原因；使用结构化日志、断点、Profiler 和布局检查器。Release 构建也要测试，混淆和资源压缩可能引入差异。</p>
+<p><strong>练习</strong>：为搜索 ViewModel 写虚拟时间测试，证明防抖和取消旧请求都正确。</p>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="第 24 章：性能、安全、构建与发布" id="lesson-第-24-章-性能-安全-构建与发布"><div class="lesson-heading"><h2 id="第-24-章-性能-安全-构建与发布">第 24 章：性能、安全、构建与发布</h2><label class="done-toggle"><input type="checkbox" data-progress="chapter-24"><span>标记完成</span></label></div>
+<h3 id="性能">性能</h3>
+<ul>
+<li>不在主线程做网络、数据库或大型 JSON/图片处理。</li>
+<li>Compose 保持参数稳定、列表 key 稳定；先测量再用 <code>remember</code> 优化。</li>
+<li>图片按显示尺寸加载，分页大列表，避免一次读入大文件。</li>
+<li>用基准与启动分析定位真实瓶颈，不凭感觉“优化”。</li>
+<li>关注冷启动、卡顿、内存泄漏、耗电和网络流量。</li>
+</ul>
+<h3 id="安全与隐私">安全与隐私</h3>
+<ul>
+<li>最小权限；校验所有外部 Intent、深链、网络和文件输入。</li>
+<li>敏感组件不应导出；确需导出时设置权限并验证调用方。</li>
+<li>不提交签名文件、服务账号、真实密钥和用户数据到 Git。</li>
+<li>日志与崩溃报告脱敏；提供隐私说明和数据删除路径。</li>
+<li>依赖保持更新并检查已知漏洞，但升级先测试。</li>
+</ul>
+<h3 id="构建">构建</h3>
+<p>区分 <code>debug/release</code> build type 与 <code>dev/prod</code> flavor。环境 URL 可通过 BuildConfig 或资源注入，但“隐藏在 App 中”的值都不能当服务端秘密。Release 开启合理的代码压缩，维护必要 keep 规则。</p>
+<h3 id="发布检查单">发布检查单</h3>
+<ol>
+<li>唯一 applicationId、版本号、图标、名称、商店素材。</li>
+<li>生成并安全备份上传密钥；保留恢复方案。</li>
+<li>真机覆盖低版本、目标版本、深色、横屏、平板、弱网、无网和低内存。</li>
+<li>检查权限、隐私、安全表单、内容分级与目标 API 要求。</li>
+<li>先内部测试，再小比例发布，观察崩溃/ANR 和业务指标后扩量。</li>
+<li>建立回滚、热修复和数据迁移方案。</li>
+</ol>
+<p><strong>练习</strong>：生成 signed release，安装到真机并完成一次离线→联网同步全流程。</p>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="第 25 章：毕业项目——离线优先任务管理 App" id="lesson-第-25-章-毕业项目-离线优先任务管理-app"><div class="lesson-heading"><h2 id="第-25-章-毕业项目-离线优先任务管理-app">第 25 章：毕业项目——离线优先任务管理 App</h2><label class="done-toggle"><input type="checkbox" data-progress="chapter-25"><span>标记完成</span></label></div>
+<h3 id="功能验收">功能验收</h3>
+<ul>
+<li>任务的新增、查看、编辑、删除、完成、搜索、筛选和排序。</li>
+<li>Room 持久化，重启/杀进程后不丢失。</li>
+<li>Compose Material 3，自适应列表/详情布局，深色主题和无障碍。</li>
+<li>ViewModel + StateFlow 单向数据流，Repository 隔离数据源。</li>
+<li>模拟或真实 REST API，同步失败可重试、无网可继续编辑。</li>
+<li>WorkManager 后台同步，通知可选。</li>
+<li>单元测试、Repository 集成测试、Room migration 测试、关键 UI 测试。</li>
+<li>Release 构建无敏感日志，README 说明架构、运行和权衡。</li>
+</ul>
+<h3 id="推荐结构">推荐结构</h3>
+<div class="code-wrap"><div class="code-head"><span>text</span><button class="copy-code" type="button">复制</button></div><pre><code>com.example.tasks/
+  app/                 # Application、导航、主题、DI
+  feature/tasks/       # screen、component、ViewModel、UiState、Action
+  domain/              # Task、Repository 接口、用例
+  data/local/          # Room entity、DAO、database
+  data/remote/         # API、DTO
+  data/repository/     # Repository 实现、映射、同步
+  worker/              # WorkManager</code></pre></div>
+<h3 id="迭代计划">迭代计划</h3>
+<ol>
+<li>先画数据流和页面状态；定义 <code>Task</code>、Repository 接口与 Fake。</li>
+<li>用 Fake 完成 Compose 列表/详情/编辑和导航。</li>
+<li>接入 Room，让数据库成为单一事实源。</li>
+<li>接入远程 API 和映射，设计错误模型。</li>
+<li>加入离线写入、同步队列、幂等和冲突策略。</li>
+<li>补测试、无障碍、平板布局、性能和发布配置。</li>
+</ol>
+<h3 id="完成定义">完成定义</h3>
+<p>“能运行”不等于完成。每个功能必须有明确空/加载/错误/内容状态；旋转、返回、杀进程、无网、重复点击均行为正确；关键规则有自动化测试；另一位开发者只看 README 就能构建项目。</p>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="Kotlin 语法速查" id="lesson-kotlin-语法速查"><div class="lesson-heading"><h2 id="kotlin-语法速查">Kotlin 语法速查</h2></div>
+<div class="code-wrap"><div class="code-head"><span>kotlin</span><button class="copy-code" type="button">复制</button></div><pre><code>// 变量与空安全
+val fixed: Int = 1
+var changeable = 2
+val nullable: String? = null
+val length = nullable?.length ?: 0
+
+// 表达式与类型检查
+val result = if (fixed &gt; 0) "yes" else "no"
+val kind = when (val x: Any = "K") {
+    is String -&gt; x.length
+    else -&gt; 0
+}
+
+// 函数、默认参数、可变参数
+fun add(a: Int, b: Int = 0) = a + b
+fun sum(vararg values: Int) = values.sum()
+
+// 类体系
+data class User(val id: Long, val name: String)
+sealed interface State { data object Loading : State }
+object Singleton
+@JvmInline value class UserId(val value: Long)
+
+// 集合与高阶函数
+val names = users.filter { it.id &gt; 0 }.map(User::name)
+
+// 扩展与泛型
+fun String.nonBlankOrNull() = trim().takeIf(String::isNotEmpty)
+inline fun &lt;reified T&gt; Any?.castOrNull(): T? = this as? T
+
+// 协程与流
+viewModelScope.launch { repository.refresh() }
+val state = repository.observe().stateIn(viewModelScope, started, emptyList())</code></pre></div>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="常见错误清单" id="lesson-常见错误清单"><div class="lesson-heading"><h2 id="常见错误清单">常见错误清单</h2></div>
+<ol>
+<li>到处使用 <code>!!</code>；应建模可空性或提前返回。</li>
+<li>默认使用 <code>var</code> 和可变集合；应优先不可变数据与 <code>copy</code>。</li>
+<li>在 Composable 中直接发网络请求；应放进 ViewModel，并用 Effect 管理必要副作用。</li>
+<li>使用 <code>GlobalScope</code>；应绑定生命周期。</li>
+<li>捕获所有异常后不处理取消；协程中应重新抛出 <code>CancellationException</code>。</li>
+<li>UI 同时把网络和数据库当事实源；离线优先时应观察数据库。</li>
+<li>导航传完整对象；应传 ID。</li>
+<li>单例持有 Activity；会造成内存泄漏。</li>
+<li>把 API key 写入 App 就认为安全；客户端内容都可被提取。</li>
+<li>只在模拟器和 Debug 测试；发布前必须覆盖真机与 Release。</li>
+</ol>
+<hr class="chapter-rule">
+</section>
+<section class="lesson" data-title="独立开发能力自检" id="lesson-独立开发能力自检"><div class="lesson-heading"><h2 id="独立开发能力自检">独立开发能力自检</h2></div>
+<p>当你能不照抄教程完成以下内容，就具备独立开发基础：</p>
+<ul>
+<li>能解释空安全、型变、扩展、内联、委托、协程取消和冷/热流。</li>
+<li>能把页面拆成无状态 Composable，并设计完整 UiState/Action。</li>
+<li>能用 ViewModel、Repository、Room、网络 API 建立可测试的数据流。</li>
+<li>能处理生命周期、进程重建、权限、深链、离线和后台同步。</li>
+<li>能写关键测试、定位 ANR/崩溃/泄漏、完成签名和发布检查。</li>
+<li>遇到新库时能阅读官方文档、判断生命周期和线程模型，而不是只找复制代码。</li>
+</ul>
+<p>最后建议：先完成一个小而完整的 App，再做第二个带登录、分页、上传和推送的 App。独立开发能力来自“完整交付闭环”，不是记住所有 API。</p>
+</section>
+      <section class="quiz-panel" id="quiz"><h2>阶段测验</h2><p>完成 6 道核心题，检查你是否理解了语言与 Android 数据流的关键原则。</p><div id="quizList"></div><p class="quiz-result" id="quizResult">已答 0 / 6</p></section>
+      <div class="no-results" id="noResults"><h2>没有找到相关内容</h2><p>试试“空安全”“协程”“Compose”“Room”或“测试”。</p></div>
+    </div>
+  </main>
+  <button class="back-top" id="backTop" type="button" aria-label="返回顶部">↑</button>
+  <script>
+    const quiz = [{"q":"声明一个可能为空的字符串应使用？","a":["String","String?","Optional<String>","nullable String"],"c":1,"e":"Kotlin 用类型后的 ? 表示可空类型。"},{"q":"协变的只读生产者应使用哪个关键字？","a":["in","out","reified","crossinline"],"c":1,"e":"生产者只输出 T，使用 out。"},{"q":"Compose 中业务状态最合适放在哪里？","a":["全局变量","Composable 局部变量","ViewModel/数据层","Activity 静态字段"],"c":2,"e":"业务状态应由 ViewModel 和数据层管理，UI 负责展示。"},{"q":"离线优先应用通常把什么作为单一事实源？","a":["网络响应","数据库","页面参数","通知"],"c":1,"e":"UI 观察本地数据库，同步器把远程数据写入数据库。"},{"q":"可延迟且需要最终执行的后台同步应优先选择？","a":["GlobalScope","Thread","WorkManager","普通 Service"],"c":2,"e":"WorkManager 支持约束、重试和持久调度。"},{"q":"Flow 的 flatMapLatest 最适合哪个场景？","a":["累加总数","搜索时取消旧请求","保存常量","阻塞主线程"],"c":1,"e":"新值到来时它会取消旧的内部流，适合搜索。"}];
+    const storageKey = "kotlin-course-progress-v1";
+    const root = document.documentElement;
+    const savedTheme = localStorage.getItem("kotlin-course-theme");
+    if (savedTheme) root.dataset.theme = savedTheme;
+    else if (matchMedia("(prefers-color-scheme: dark)").matches) root.dataset.theme = "dark";
+
+    const toggleTheme = () => {
+      root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("kotlin-course-theme", root.dataset.theme);
+    };
+    document.getElementById("themeButton").onclick = toggleTheme;
+    document.getElementById("mobileTheme").onclick = toggleTheme;
+    document.getElementById("printButton").onclick = () => print();
+
+    const sidebar = document.querySelector(".sidebar");
+    document.getElementById("menuButton").onclick = () => sidebar.classList.toggle("open");
+    document.querySelectorAll(".toc-link").forEach(link => link.addEventListener("click", () => sidebar.classList.remove("open")));
+
+    const checks = [...document.querySelectorAll("[data-progress]")];
+    const saved = new Set(JSON.parse(localStorage.getItem(storageKey) || "[]"));
+    checks.forEach(input => {
+      input.checked = saved.has(input.dataset.progress);
+      input.addEventListener("change", () => { input.checked ? saved.add(input.dataset.progress) : saved.delete(input.dataset.progress); localStorage.setItem(storageKey, JSON.stringify([...saved])); updateProgress(); });
+    });
+    function updateProgress() {
+      document.getElementById("progressText").textContent = saved.size + " / " + checks.length;
+      document.getElementById("progressFill").style.width = (saved.size / checks.length * 100) + "%";
+    }
+    updateProgress();
+
+    const lessons = [...document.querySelectorAll(".lesson")];
+    const noResults = document.getElementById("noResults");
+    document.getElementById("search").addEventListener("input", event => {
+      const query = event.target.value.trim().toLocaleLowerCase();
+      let visible = 0;
+      lessons.forEach(section => { const match = !query || section.textContent.toLocaleLowerCase().includes(query); section.classList.toggle("is-hidden", !match); if (match) visible++; });
+      document.querySelector(".hero").style.display = query ? "none" : "grid";
+      noResults.classList.toggle("show", visible === 0);
+    });
+
+    document.querySelectorAll(".copy-code").forEach(button => button.addEventListener("click", async () => {
+      const code = button.closest(".code-wrap").querySelector("code").innerText;
+      try { await navigator.clipboard.writeText(code); button.textContent = "已复制"; } catch { button.textContent = "请手动复制"; }
+      setTimeout(() => button.textContent = "复制", 1400);
+    }));
+
+    const quizList = document.getElementById("quizList");
+    const answered = new Map();
+    quiz.forEach((item, index) => {
+      const card = document.createElement("div"); card.className = "quiz-card";
+      card.innerHTML = "<strong>" + (index + 1) + ". " + item.q + "</strong><div class='answers'>" + item.a.map((answer, i) => "<button class='answer' data-index='" + i + "' type='button'>" + answer + "</button>").join("") + "</div><p class='explain'></p>";
+      card.querySelectorAll(".answer").forEach(button => button.onclick = () => {
+        if (answered.has(index)) return;
+        const selected = Number(button.dataset.index); answered.set(index, selected === item.c);
+        card.querySelectorAll(".answer").forEach((b, i) => { if (i === item.c) b.classList.add("correct"); else if (i === selected) b.classList.add("wrong"); });
+        card.querySelector(".explain").textContent = item.e;
+        const score = [...answered.values()].filter(Boolean).length;
+        document.getElementById("quizResult").textContent = "已答 " + answered.size + " / " + quiz.length + " · 正确 " + score + " 题";
+      });
+      quizList.appendChild(card);
+    });
+
+    const bar = document.querySelector(".reading-bar");
+    const backTop = document.getElementById("backTop");
+    addEventListener("scroll", () => {
+      const max = document.documentElement.scrollHeight - innerHeight;
+      bar.style.width = (max ? scrollY / max * 100 : 0) + "%";
+      backTop.classList.toggle("show", scrollY > 700);
+    }, { passive:true });
+    backTop.onclick = () => scrollTo({ top:0, behavior:"smooth" });
+
+    const links = [...document.querySelectorAll(".toc-link")];
+    const targets = links.map(link => document.getElementById(link.dataset.target)).filter(Boolean);
+    const observer = new IntersectionObserver(entries => {
+      entries.filter(e => e.isIntersecting).forEach(entry => { links.forEach(l => l.classList.toggle("active", l.dataset.target === entry.target.id)); });
+    }, { rootMargin:"-10% 0px -75% 0px" });
+    targets.forEach(target => observer.observe(target));
+  </script>
+</body>
+</html>
