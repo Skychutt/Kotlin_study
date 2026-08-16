@@ -20,10 +20,12 @@
 
 # misc
 .DS_Store
+.idea/
 *.pem
 
 # debug
 npm-debug.log*
+.npm-cache/
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*

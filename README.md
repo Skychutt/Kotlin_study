@@ -21,6 +21,12 @@
 8. 网络、序列化、Room、DataStore、离线同步和 WorkManager
 9. 测试、调试、性能、安全、构建、签名和发布
 10. 可验收的离线优先任务管理 App 毕业项目
+11. Gradle、模块化、资源国际化、进程恢复与 Compose 深入
+12. Navigation 3、自适应大屏、权限、CameraX、Media3、地图与蓝牙
+13. Credential Manager、Passkey、推送、App Links、Widget 与后台执行
+14. Paging、上传下载、WebSocket、离线同步协议与冲突处理
+15. Play Billing、广告、CI/CD、Macrobenchmark、安全、隐私与 Play Console
+16. View/Fragment 互操作、Kotlin Multiplatform 与第二个生产级毕业项目
 
 ## 可选：以开发服务器运行网页
 
@@ -36,4 +42,4 @@ npm run dev
 
 ## 学习建议
 
-每天完成一小节并亲手改写示例。先用 Fake Repository 完成界面，再接 Room 和网络；每项功能都验证加载、空、错误和内容状态。最后按第 25 章的验收清单独立完成毕业项目。
+每天完成一小节并亲手改写示例。先用 Fake Repository 完成界面，再接 Room 和网络；每项功能都验证加载、空、错误和内容状态。先按第 25 章完成第一毕业项目，再按第 50 章完成生产级综合项目。

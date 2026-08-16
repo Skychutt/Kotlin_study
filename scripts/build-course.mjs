@@ -159,6 +159,12 @@ const quiz = [
   { q: "离线优先应用通常把什么作为单一事实源？", a: ["网络响应", "数据库", "页面参数", "通知"], c: 1, e: "UI 观察本地数据库，同步器把远程数据写入数据库。" },
   { q: "可延迟且需要最终执行的后台同步应优先选择？", a: ["GlobalScope", "Thread", "WorkManager", "普通 Service"], c: 2, e: "WorkManager 支持约束、重试和持久调度。" },
   { q: "Flow 的 flatMapLatest 最适合哪个场景？", a: ["累加总数", "搜索时取消旧请求", "保存常量", "阻塞主线程"], c: 1, e: "新值到来时它会取消旧的内部流，适合搜索。" }
+  ,{ q: "应用进程死亡后仍需恢复的业务数据应放在哪里？", a: ["remember", "ViewModel 字段", "Room/文件或服务端", "Application 单例"], c: 2, e: "内存对象都可能随进程消失，业务数据必须持久化。" }
+  ,{ q: "生产级离线写入最可靠的模式是？", a: ["只修改 UI", "本地事务同时更新数据和 outbox", "每次都等待网络", "把请求放全局协程"], c: 1, e: "业务记录与 outbox 同事务可保证崩溃后操作仍可同步。" }
+  ,{ q: "大屏适配应主要依据什么？", a: ["设备品牌", "手机或平板名称", "当前窗口可用空间", "屏幕物理英寸"], c: 2, e: "分屏、折叠和桌面窗口会动态变化，应依据当前窗口尺寸。" }
+  ,{ q: "用户购买订阅后，最终权益应由谁验证？", a: ["客户端本地布尔值", "可信服务端验证 purchase token", "Compose 页面", "通知栏"], c: 1, e: "客户端可被篡改，服务端验证后才应授予权益。" }
+  ,{ q: "选择用户图片时，优先使用什么以减少权限？", a: ["读取整个存储", "Photo Picker", "后台位置", "蓝牙扫描"], c: 1, e: "系统 Photo Picker 让用户只授予选中的媒体，无需读取整个图库。" }
+  ,{ q: "以下哪项最适合可靠的延迟后台同步？", a: ["LaunchedEffect", "GlobalScope", "WorkManager", "普通 Thread"], c: 2, e: "WorkManager 能在 App 退出或设备重启后按约束继续完成工作。" }
 ];
 
 const documentHtml = `<!doctype html>
@@ -264,7 +270,7 @@ const documentHtml = `<!doctype html>
     <div class="brand"><span class="brand-mark">K</span><span>Kotlin → Android</span></div>
     <input class="search" id="search" type="search" placeholder="搜索语法、Compose、Room…" aria-label="搜索课程">
     <div class="progress-card"><div class="progress-meta"><span>课程进度</span><strong id="progressText">0 / ${chapters.length}</strong></div><div class="progress-track"><div class="progress-fill" id="progressFill"></div></div></div>
-    <div class="toc-title">25 章完整路径</div>
+    <div class="toc-title">${chapters.length} 章完整路径</div>
     <nav class="toc">${tocHtml}</nav>
     <div class="side-actions"><button class="icon-btn" id="themeButton" type="button">◐ 主题</button><button class="icon-btn" id="printButton" type="button">⎙ 打印</button></div>
   </aside>
@@ -274,12 +280,12 @@ const documentHtml = `<!doctype html>
         <span class="eyebrow">从语言到上架 · 完整学习路径</span>
         <h1>Kotlin 全语法<br>与 Android 独立开发</h1>
         <p class="lead">不是零散语法表，而是一条从类型系统、函数式编程和协程，到 Compose、架构、离线数据、测试与发布的完整工程路线。</p>
-        <div class="stats"><div class="stat"><strong>25</strong><span>系统章节</span></div><div class="stat"><strong>${(markdown.length / 10000).toFixed(1)} 万</strong><span>字课程正文</span></div><div class="stat"><strong>${(markdown.match(/```kotlin/g) || []).length}+</strong><span>Kotlin 示例组</span></div><div class="stat"><strong>1</strong><span>毕业项目</span></div></div>
+        <div class="stats"><div class="stat"><strong>${chapters.length}</strong><span>系统章节</span></div><div class="stat"><strong>${(markdown.length / 10000).toFixed(1)} 万</strong><span>字课程正文</span></div><div class="stat"><strong>${(markdown.match(/```kotlin/g) || []).length}+</strong><span>Kotlin 示例组</span></div><div class="stat"><strong>2</strong><span>毕业项目</span></div></div>
       </div>
     </section>
     <div class="course" id="course">
       ${html.join("\n")}
-      <section class="quiz-panel" id="quiz"><h2>阶段测验</h2><p>完成 6 道核心题，检查你是否理解了语言与 Android 数据流的关键原则。</p><div id="quizList"></div><p class="quiz-result" id="quizResult">已答 0 / ${quiz.length}</p></section>
+      <section class="quiz-panel" id="quiz"><h2>阶段测验</h2><p>完成 ${quiz.length} 道核心题，检查你是否理解了语言、Android 平台与生产数据流的关键原则。</p><div id="quizList"></div><p class="quiz-result" id="quizResult">已答 0 / ${quiz.length}</p></section>
       <div class="no-results" id="noResults"><h2>没有找到相关内容</h2><p>试试“空安全”“协程”“Compose”“Room”或“测试”。</p></div>
     </div>
   </main>
