@@ -2,6 +2,14 @@
 
 本文件夹包含一套从 Kotlin 零基础到现代 Android 独立开发的完整中文课程。
 
+## 在线阅读
+
+发布后可通过 GitHub Pages 打开：
+
+https://skychutt.github.io/Kotlin_study/
+
+仓库首次启用时，打开 GitHub 仓库 `Settings → Pages`，把 Source 选成 **GitHub Actions**，保存即可。之后每次推送到 `main`，网页会自动更新。
+
 ## 直接开始学习
 
 - 双击 `Kotlin全语法教学.html`：打开带目录、搜索、进度保存、代码复制、深色模式和测验的离线网页。
